@@ -7,69 +7,80 @@
     <style>
         :root {
             --primary-color: #007bff; --bg-color: #f4f7f6; --font-color: #333;
-            --digit-height: 3.5rem; /* 定义数字高度变量，方便计算 */
+            --digit-height: 40px;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--font-color); }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background-color: var(--bg-color); color: var(--font-color); }
         .app-container { max-width: 1200px; margin: 0 auto; padding: 15px; }
-        .login-container { text-align: center; padding-top: 20vh; }
+
+        /* --- 登录界面 (保持不变) --- */
+        .login-container { text-align: center; padding-top: 15vh; }
         .login-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); display: inline-block; width: 90%; max-width: 400px; }
-        .login-box h1 { font-size: 24px; color: var(--primary-color); }
+        .login-box h1 { font-size: 24px; color: var(--primary-color); margin-top: 0; }
         .login-box h2 { font-size: 18px; margin-bottom: 25px; color: #666; }
-        .login-box input { width: 100%; padding: 14px; margin-bottom: 15px; font-size: 16px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-        .login-box button { width: 100%; padding: 14px; font-size: 18px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s; }
-        #login-message { color: #dc3545; height: 20px; font-weight: bold; }
+        .login-box input { width: 100%; padding: 14px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        .login-box button { width: 100%; padding: 14px; font-size: 18px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; }
+        #login-message { color: #dc3545; height: 24px; font-weight: bold; }
         .hidden { display: none; }
 
-        .draw-dashboard { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-start; }
-        .draw-card { background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); padding: 20px; flex: 1; min-width: 300px; transition: all 0.4s ease-in-out; cursor: pointer; }
-        .draw-card.collapsed { flex-grow: 0.5; filter: brightness(0.95); }
-        .draw-card h3 { text-align: center; margin-top: 0; color: var(--primary-color); }
-        
-        /* --- 新的动画样式 --- */
-        .number-display { display: flex; justify-content: center; gap: 8px; margin: 25px 0; }
-        .digit-container {
-            height: var(--digit-height);
-            width: calc(var(--digit-height) * 0.7);
-            background: #222;
-            border-radius: 5px;
-            overflow: hidden;
-            font-family: 'Courier New', Courier, monospace;
-        }
-        .reel {
+        /* --- 全新布局：上中下三段式 --- */
+        .top-controls {
             display: flex;
-            flex-direction: column;
-            transition: transform 1s ease-in-out; /* 默认过渡效果 */
-        }
-        .reel span {
-            display: flex;
+            justify-content: space-around;
             align-items: center;
-            justify-content: center;
-            height: var(--digit-height);
-            font-size: calc(var(--digit-height) * 0.8);
-            font-weight: bold;
-            color: #39ff14; /* 荧光绿 */
+            flex-wrap: wrap;
+            gap: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
-        /* --- 动画样式结束 --- */
+        .control-unit { text-align: center; }
+        .control-unit button { padding: 10px 15px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; margin-bottom: 10px; width: 200px; }
+        .control-unit button:disabled { background-color: #aaa; cursor: not-allowed; }
 
-        .draw-button { width: 100%; padding: 12px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s; margin-bottom: 15px; }
-        .draw-button:disabled { background-color: #aaa; cursor: not-allowed; }
-        .info-box { background: #e9ecef; padding: 10px; border-radius: 8px; font-size: 14px; margin-bottom: 15px; word-break: break-all; }
-        .info-box p { margin: 5px 0; }
-        .result-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        .result-table th, .result-table td { padding: 8px; text-align: left; border-bottom: 1px solid #eee; }
-        .result-table th { font-weight: bold; }
-        .result-table tr:first-child td { font-weight: bold; color: #dc3545; }
-        
-        @media (max-width: 768px) {
-            .draw-dashboard { flex-direction: column; }
-            .draw-card.collapsed { flex-grow: 1; filter: none; }
+        .info-section {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            background: #e9ecef;
+            border-radius: 8px;
+            font-weight: bold;
         }
+
+        .bottom-lists {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; /* 在窄屏上自动换行 */
+        }
+        .list-container {
+            flex: 1; /* 等分宽度 */
+            min-width: 300px; /* 保证最小宽度 */
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .list-container h3 { text-align: center; margin-top: 0; color: var(--primary-color); }
+        .result-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .result-table th, .result-table td { padding: 8px 4px; text-align: left; border-bottom: 1px solid #eee; }
+        .result-table th:first-child, .result-table td:first-child { width: 40px; text-align: center; } /* 排名列 */
+        .result-table th:last-child, .result-table td:last-child { text-align: center; } /* 结果列 */
+        .result-table tr:first-child td { font-weight: bold; color: #dc3545; }
+        .un-drawn-list { font-size: 13px; color: #666; line-height: 1.6; word-break: break-all; }
+
+        /* --- 全新动画样式 --- */
+        .number-display { display: flex; justify-content: center; gap: 5px; }
+        .digit-container { height: var(--digit-height); width: calc(var(--digit-height) * 0.75); background: #2c3e50; border-radius: 5px; overflow: hidden; }
+        .reel { transform: translateY(0); }
+        .reel span { display: flex; align-items: center; justify-content: center; height: var(--digit-height); font-size: calc(var(--digit-height) * 0.7); font-weight: bold; color: #ecf0f1; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+
     </style>
 </head>
 <body>
     <div class="app-container">
+        <!-- 登录界面 -->
         <div id="login-section" class="login-container">
-            <div class="login-box">
+             <div class="login-box">
                 <h1>钟英中学初一（3）班</h1>
                 <h2>验菜摇号系统</h2>
                 <div id="login-message"></div>
@@ -79,29 +90,35 @@
             </div>
         </div>
 
+        <!-- 摇号主界面 -->
         <div id="dashboard-section" class="hidden">
-            <div id="draw-dashboard" class="draw-dashboard"></div>
+            <!-- 顶部摇号区 -->
+            <div id="top-controls" class="top-controls"></div>
+            <!-- 中间说明区 -->
+            <div class="info-section">说明：摇号数字【最小】的参与验菜，感谢您的支持~</div>
+            <!-- 底部榜单区 -->
+            <div id="bottom-lists" class="bottom-lists"></div>
         </div>
     </div>
 
 <script>
 let currentUser = {}, allStudents = [], drawActivities = {};
+// DOM 元素
 const loginSection = document.getElementById('login-section');
 const dashboardSection = document.getElementById('dashboard-section');
 const loginButton = document.getElementById('loginButton');
-const studentIdInput = document.getElementById('studentId');
-const studentNameInput = document.getElementById('studentName');
-const loginMessage = document.getElementById('login-message');
-const dashboard = document.getElementById('draw-dashboard');
+const topControls = document.getElementById('top-controls');
+const bottomLists = document.getElementById('bottom-lists');
 
 loginButton.addEventListener('click', handleLogin);
 
+// (登录和初始化函数，逻辑不变，仅渲染目标改变)
 async function handleLogin() {
-    const studentId = studentIdInput.value.trim();
-    const name = studentNameInput.value.trim();
+    const studentId = document.getElementById('studentId').value.trim();
+    const name = document.getElementById('studentName').value.trim();
+    const loginMessage = document.getElementById('login-message');
     if (!studentId || !name) {
-        loginMessage.textContent = '学号和姓名不能为空！';
-        return;
+        loginMessage.textContent = '学号和姓名不能为空！'; return;
     }
     try {
         const response = await fetch('/api/login', {
@@ -122,7 +139,6 @@ async function handleLogin() {
         loginMessage.textContent = '网络错误，请稍后重试。';
     }
 }
-
 async function initializeDashboard() {
     try {
         const response = await fetch('/api/data');
@@ -131,88 +147,90 @@ async function initializeDashboard() {
         drawActivities = data.draws;
         renderDashboard();
     } catch (error) {
-        dashboard.innerHTML = '<p>加载数据失败，请刷新页面。</p>';
+        dashboardSection.innerHTML = '<p style="color:red; text-align:center;">加载数据失败，请检查服务器连接。</p>';
     }
 }
 
 function renderDashboard() {
-    dashboard.innerHTML = '';
+    topControls.innerHTML = '';
+    bottomLists.innerHTML = '';
+
     Object.entries(drawActivities).forEach(([key, activity]) => {
-        dashboard.appendChild(createDrawCard(key, activity));
+        const drawnStudentIds = new Set(activity.results.map(r => r.studentId));
+        const hasDrawn = drawnStudentIds.has(currentUser.studentId);
+        const userResult = activity.results.find(r => r.studentId === currentUser.studentId);
+
+        // 渲染顶部控制单元
+        topControls.appendChild(createControlUnit(key, activity.title, hasDrawn, userResult?.number));
+        
+        // 渲染底部榜单
+        bottomLists.appendChild(createListContainer(key, activity));
     });
-    addCardClickListeners();
 }
 
-function createDrawCard(key, activity) {
-    const card = document.createElement('div');
-    card.className = 'draw-card';
-    card.dataset.key = key;
+function createControlUnit(key, title, hasDrawn, userNumber = '0000') {
+    const unit = document.createElement('div');
+    unit.className = 'control-unit';
+    unit.dataset.drawKey = key;
 
-    // *** 关键修复 1: 正确计算未摇号名单 ***
+    let reelHTML = '';
+    for (let i = 0; i < 6; i++) { for (let j = 0; j < 10; j++) { reelHTML += `<span>${j}</span>`; } }
+    
+    let digitReelsHTML = '';
+    for (let i = 0; i < 4; i++) {
+        digitReelsHTML += `<div class="digit-container"><div class="reel">${reelHTML}</div></div>`;
+    }
+
+    unit.innerHTML = `
+        <button data-key="${key}" ${hasDrawn ? 'disabled' : ''}>
+            ${hasDrawn ? '您已参与' : `${title}摇号`}
+        </button>
+        <div class="number-display">${digitReelsHTML}</div>
+    `;
+
+    // 页面加载后，将数字显示器设置为用户已有的结果
+    const reels = unit.querySelectorAll('.reel');
+    const digitHeight = unit.querySelector('.reel span')?.offsetHeight || 40;
+    const digits = userNumber.split('').map(Number);
+    reels.forEach((reel, i) => {
+        const targetRow = 40 + digits[i];
+        reel.style.transition = 'none'; // 取消动画
+        reel.style.transform = `translateY(-${targetRow * digitHeight}px)`;
+    });
+    
+    unit.querySelector('button').addEventListener('click', handleDraw);
+    return unit;
+}
+
+function createListContainer(key, activity) {
+    const container = document.createElement('div');
+    container.className = 'list-container';
+
     const drawnStudentIds = new Set(activity.results.map(r => r.studentId));
-    const hasDrawn = drawnStudentIds.has(currentUser.studentId);
     const unDrawnStudents = allStudents.filter(s => !drawnStudentIds.has(s.studentId));
     const unDrawnIds = unDrawnStudents.map(s => s.studentId).join(', ') || '全部参与';
 
-    // 动态创建数字卷轴HTML
-    let digitReelsHTML = '';
-    for (let i = 0; i < 4; i++) {
-        digitReelsHTML += `
-            <div class="digit-container">
-                <div class="reel">
-                    ${Array.from({length: 10}, (_, n) => `<span>${n}</span>`).join('')}
-                </div>
-            </div>
-        `;
-    }
-
-    card.innerHTML = `
+    container.innerHTML = `
         <h3>${activity.title}</h3>
-        <div class="number-display">${digitReelsHTML}</div>
-        <button class="draw-button" data-key="${key}" ${hasDrawn ? 'disabled' : ''}>
-            ${hasDrawn ? '您已参与本次摇号' : '开始摇号'}
-        </button>
-        <div class="info-box">
-            <p><strong>说明：</strong>摇号数字【最小】的参与验菜，感谢您的支持~</p>
-            <p><strong>暂未摇号名单：</strong>${unDrawnIds}</p>
-        </div>
-        <div class="table-container">
-            <table class="result-table">
-                <thead><tr><th>排名</th><th>姓名</th><th>摇号结果</th></tr></thead>
-                <tbody>
-                    ${activity.results.map((r, index) => `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${r.name}</td>
-                            <td>${r.number}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        </div>
+        <table class="result-table">
+            <thead><tr><th>排名</th><th>姓名</th><th>摇号结果</th></tr></thead>
+            <tbody>
+                ${activity.results.map((r, index) => `
+                    <tr><td>${index + 1}</td><td>${r.name}</td><td>${r.number}</td></tr>
+                `).join('') || '<tr><td colspan="3" style="text-align:center;">暂无摇号记录</td></tr>'}
+            </tbody>
+        </table>
+        <hr>
+        <p class="un-drawn-list"><strong>暂未摇号：</strong>${unDrawnIds}</p>
     `;
-    card.querySelector('.draw-button').addEventListener('click', handleDraw);
-    return card;
-}
-
-function addCardClickListeners() {
-    const cards = document.querySelectorAll('.draw-card');
-    cards.forEach(card => {
-        card.addEventListener('click', () => {
-            if (window.innerWidth > 768) {
-                cards.forEach(c => c.classList.add('collapsed'));
-                card.classList.remove('collapsed');
-            }
-        });
-    });
+    return container;
 }
 
 async function handleDraw(event) {
-    event.stopPropagation();
     const button = event.target;
     const drawKey = button.dataset.key;
     button.disabled = true;
-    button.textContent = '正在获取幸运数字...';
+    button.textContent = '摇号中...';
 
     try {
         const response = await fetch('/api/draw', {
@@ -223,56 +241,57 @@ async function handleDraw(event) {
         const data = await response.json();
         if (response.ok) {
             await runLotteryAnimation(drawKey, data.number);
-            await initializeDashboard();
+            await initializeDashboard(); // 重新加载所有数据并渲染
         } else {
             alert(data.message);
-            button.textContent = '您已参与本次摇号';
+            button.textContent = '您已参与';
         }
     } catch (error) {
-        alert('摇号失败，请刷新重试');
+        alert('网络错误，请重试');
         button.disabled = false;
-        button.textContent = '开始摇号';
+        button.textContent = `${drawActivities[drawKey].title}摇号`;
     }
 }
 
-// *** 关键修复 2: 全新动画函数 ***
+// *** 全新动画函数，严格按照您的思路实现 ***
 function runLotteryAnimation(drawKey, finalNumber) {
-    const card = document.querySelector(`.draw-card[data-key="${drawKey}"]`);
-    const reels = card.querySelectorAll('.reel');
-    const digitHeight = reels[0].querySelector('span').offsetHeight;
+    const controlUnit = document.querySelector(`.control-unit[data-draw-key="${drawKey}"]`);
+    const reels = controlUnit.querySelectorAll('.reel');
+    const digitHeight = controlUnit.querySelector('.reel span').offsetHeight;
+    const finalDigits = finalNumber.split('').map(Number); // [1, 2, 3, 4]
 
-    const spin = (reel, finalDigit) => {
-        return new Promise(resolve => {
-            const totalSpins = 3; // 转动圈数
-            const totalDistance = (totalSpins * 10 + finalDigit) * digitHeight;
-            
-            // 使用随机的速度和更平滑的缓动函数
-            const randomDuration = 1.5 + Math.random(); // 1.5到2.5秒
-            reel.style.transition = `transform ${randomDuration}s cubic-bezier(0.25, 1, 0.5, 1)`;
-            reel.style.transform = `translateY(-${totalDistance}px)`;
-            
-            setTimeout(resolve, randomDuration * 1000);
-        });
-    };
-    
+    // 动画参数
+    const DURATION_BASE = 1500; // 基础减速动画时长
+    const STOP_DELAYS = [8000, 6000, 4000, 2000]; // 千, 百, 十, 个位的停止时间点
+
     return new Promise(resolve => {
-        // 让所有卷轴先快速转起来
-        reels.forEach(reel => {
-            const randomOffset = -Math.floor(Math.random() * 5 + 5) * digitHeight; // 随机初始偏移
-            reel.style.transition = 'transform 0.5s ease-out';
+        reels.forEach((reel, i) => {
+            // 1. 设置初始状态：让卷轴先快速滚动起来
+            // 为了让滚动看起来连续，我们先把它移动到一个随机的较远位置
+            const randomOffset = -(Math.floor(Math.random() * 10) + 20) * digitHeight;
+            reel.style.transition = 'none';
             reel.style.transform = `translateY(${randomOffset}px)`;
+            
+            // 2. 强制浏览器渲染初始状态
+            // 使用 requestAnimationFrame 确保 transform 被应用
+            requestAnimationFrame(() => {
+                // 3. 设置减速动画的最终位置和时长
+                const targetDigit = finalDigits[i];
+                // 目标是第 5 组 (行号 40-49) 的对应数字，以确保滚动足够远
+                const targetRow = 40 + targetDigit;
+                const finalTranslateY = -(targetRow * digitHeight);
+                const duration = DURATION_BASE + i * 500; // 千位转得久一点
+
+                // 4. 在指定延时后，启动减速动画
+                setTimeout(() => {
+                    reel.style.transition = `transform ${duration}ms cubic-bezier(0.25, 1, 0.5, 1)`;
+                    reel.style.transform = `translateY(${finalTranslateY}px)`;
+                }, STOP_DELAYS[i] - duration); // 在停止时间点之前开始减速
+            });
         });
 
-        // 阶梯式停止
-        setTimeout(() => {
-            setTimeout(() => spin(reels[3], parseInt(finalNumber[3])), 0);     // 第4位, 2秒后停
-            setTimeout(() => spin(reels[2], parseInt(finalNumber[2])), 2000);  // 第3位, 4秒后停
-            setTimeout(() => spin(reels[1], parseInt(finalNumber[1])), 4000);  // 第2位, 6秒后停
-            setTimeout(async () => {
-                await spin(reels[0], parseInt(finalNumber[0]));                 // 第1位, 8秒后停
-                resolve(); // 所有动画完成
-            }, 6000);
-        }, 500); // 延迟0.5秒开始停止流程，让初始转动更明显
+        // 5. 在最长的动画结束后，解决Promise
+        setTimeout(resolve, STOP_DELAYS[0] + 500); // 8秒 + 缓冲
     });
 }
 </script>
