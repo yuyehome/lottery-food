@@ -67,7 +67,7 @@
         <!-- 摇号主界面 -->
         <div id="dashboard-section" class="hidden">
             <div id="top-controls" class="top-controls"></div>
-            <div class="info-section">说明：摇号数字【最小】的参与验菜，感谢您的支持~</div>
+            <div class="info-section">摇号数字【最小】的参与验菜，感谢您的支持~</div>
             <div id="bottom-lists" class="bottom-lists"></div>
         </div>
     </div>
@@ -179,8 +179,8 @@ function runLotteryAnimation(drawKey, finalNumber) {
     const finalDigits = finalNumber.split('').map(Number); // [1, 2, 3, 4]
 
     // 定义停止时间点 (千, 百, 十, 个)
-    const STOP_TIMINGS = [8000, 6000, 4000, 2000]; 
-    const DECELERATION_DURATION = 1500; // 减速动画时长
+    const STOP_TIMINGS = [5000, 4000, 3000, 2000]; 
+    const DECELERATION_DURATION = 500; // 减速动画时长
 
     return new Promise(resolve => {
         // 1. 让所有数字同时开始无限滚动
